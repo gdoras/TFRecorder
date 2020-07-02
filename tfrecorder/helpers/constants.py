@@ -1,0 +1,13 @@
+
+
+EXAMPLES_CONFIG_FILENAME = 'config.txt'
+EXAMPLES_TFRECORD_FILES_CONFIG_FILENAME = 'tfrecord_files_config.txt'
+EXAMPLES_LIST_FILENAME = 'examples.csv'
+TFRECORDS_FILES_LIST_FILENAME = 'tfrecords.csv'
+
+TRAIN_DIRECTORY_NAME = 'train'
+EVAL_DIRECTORY_NAME = 'eval'
+TEST_DIRECTORY_NAME = 'test'
+
+
+
