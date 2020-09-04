@@ -81,7 +81,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
             continue # ignore this example
 
         # if we have split the original example, no need to keep it around
-        if chunked_examples:
+        if chunked_examples is not None:
             example.release()
             count_chunks = True
         else:
