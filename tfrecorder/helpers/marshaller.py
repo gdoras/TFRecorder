@@ -76,13 +76,13 @@ class Example:
         """
         To be implemented by concrete subclass.
         Optionally splits this example data into chunks, and create one Example object per chunk. By default, simply
-        returns a list containing only this Example object.
+        returns None.
 
         Returns:
             examples: list, of Example objects.
 
         """
-        return [self]
+        return None
 
 
     @abc.abstractmethod
