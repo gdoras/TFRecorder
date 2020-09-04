@@ -114,8 +114,11 @@ def assert_examples_content_matches_dataset_content(examples,
             e.load(**kw)
             ces = e.split(**kw)
 
-            for ce in ces:
-                yield ce
+            if ces:
+                for ce in ces:
+                    yield ce
+            else:
+                yield e
 
     chunk_generator = yield_example_chunk_data(examples, **kwargs)
     for chunked_example, value_tensors in zip(chunk_generator, dataset):
