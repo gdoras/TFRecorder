@@ -126,6 +126,10 @@ def assert_examples_content_matches_dataset_content(examples,
         for k, vt in zip(ks, value_tensors):
 
             ev = getattr(chunked_example, k) # example original values
+
+            if ev is None:
+                continue # simply ignore unset fields
+
             mv = vt.numpy()          # protobuf message values to numpy
 
             if not logged_first:

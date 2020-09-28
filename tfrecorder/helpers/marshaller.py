@@ -127,6 +127,9 @@ class Example:
             # here k is the getter func name of each attribute marked as @tfrecordable
             v = getattr(self, k)
 
+            if v is None:
+                continue # simply ignore unset fields
+
             if t in [Example.Field.TYPE_BOOL,
                      Example.Field.TYPE_INT32,
                      Example.Field.TYPE_INT64]:
