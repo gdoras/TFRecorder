@@ -50,11 +50,15 @@ def save_config(config_filepath,
         {
             'class_name': examples_class.__name__,
             'list_filepath': os.path.abspath(examples_filepath),
-            'train_eval_test_ratio': str(examples_train_eval_test_ratio),
             'tfrecord_file_max_size_in_mb': '%.2e' % (examples_tfrecord_file_max_size_in_bytes / 1e6),
             'log_in_csv_file': str(examples_log_in_csv_file),
         }
     )
+    if examples_train_eval_test_ratio:
+        examples_dict['examples'].update(
+            {
+                'train_eval_test_ratio': str(examples_train_eval_test_ratio),
+            })
 
     # counts
     counts = {'%s_count' % k: str(v) for k, v in counts.items()}

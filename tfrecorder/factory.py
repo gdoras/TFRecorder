@@ -10,6 +10,10 @@ import tfrecorder.helpers.utils as utils
 
 # wrappers to deal with various use cases
 
+
+
+
+
 def generate_and_save_tfrecords_files_for_examples_file(save_directory_path,
                                                         example_class,
                                                         examples_filepath,
@@ -21,7 +25,7 @@ def generate_and_save_tfrecords_files_for_examples_file(save_directory_path,
     Simple wrapper around generate_and_save_tfrecords_files_for_examples.
 
     Args:
-        save_directory_path: str, path of the directory where to save the various directories
+        save_directory_path: str, path of the directory where to save the tfrecord files
         example_class: class object, the Example subclass to use
         examples_filepath: str, path to a csv file that describes the examples to instantiate and to use
         examples_tfrecord_file_max_size_in_bytes: int, maximum size in bytes of a tfrecord file.
@@ -37,6 +41,18 @@ def generate_and_save_tfrecords_files_for_examples_file(save_directory_path,
                                                           examples_log_in_csv_file=examples_log_in_csv_file,
                                                           **kwargs
                                                           )
+
+    counts = {os.path.basename(save_directory_path): len(examples)}
+    config_filepath = os.path.join(save_directory_path, cts.EXAMPLES_TFRECORD_FILES_CONFIG_FILENAME)
+    config_parser.save_config(config_filepath,
+                              example_class,
+                              examples_filepath=examples_filepath,
+                              examples_train_eval_test_ratio=None,
+                              examples_tfrecord_file_max_size_in_bytes=examples_tfrecord_file_max_size_in_bytes,
+                              examples_log_in_csv_file=examples_log_in_csv_file,
+                              counts=counts,
+                              **kwargs)
+
 
 
 def generate_and_save_train_eval_test_tfrecords_files(save_directory_path,

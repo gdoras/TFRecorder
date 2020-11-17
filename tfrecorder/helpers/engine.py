@@ -2,6 +2,7 @@ import tensorflow as tf
 import os
 import time
 import csv
+from tqdm import tqdm
 
 import tfrecorder.helpers.constants as cts
 import tfrecorder.helpers.utils as utils
@@ -13,6 +14,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
                                                    examples,
                                                    examples_tfrecords_files_max_size_in_bytes=1e6,
                                                    examples_log_in_csv_file=True,
+                                                   progress_bar=True,
                                                    **kwargs):
     """
     This is the core of the TFRecorder logic.
@@ -24,6 +26,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
         examples: list, of Example objects
         examples_tfrecords_files_max_size_in_bytes: int, maximum size in bytes of a tfrecord file.
         examples_log_in_csv_file: bool, whether to log the metadata of the examples in a csv file.
+        progress_bar: bool, display a progress bar.
 
     Returns:
         -
@@ -58,6 +61,9 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
     current_tfrecord_file_writer = tf.io.TFRecordWriter(current_tfrecord_filepath)
 
     i, j = -1, 0
+    if progress_bar:
+        examples = tqdm(examples)
+
     for i, example in enumerate(examples):
 
         # instantiate the data of this example
@@ -124,7 +130,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
         del chunked_examples
 
         hop = max(10, num_examples // 10)
-        if i > 0  and (i+1) % hop == 0:
+        if not progress_bar and i > 0  and (i+1) % hop == 0:
 
             num_chunked_examples = ' (%d chunks)' % j if j > 0 else ''
             logger.info("   Processed %d / %d examples%s and saved %d tfrecords files (eta: %s)..." %
