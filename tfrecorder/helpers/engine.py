@@ -12,7 +12,7 @@ LOGGER_NAME = 'TFRecorder'
 
 def generate_and_save_tfrecords_files_for_examples(save_directory_path,
                                                    examples,
-                                                   examples_tfrecords_files_max_size_in_bytes=1e6,
+                                                   examples_tfrecord_file_max_size_in_bytes=1e6,
                                                    examples_log_in_csv_file=True,
                                                    progress_bar=True,
                                                    **kwargs):
@@ -24,7 +24,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
     Args:
         save_directory_path: str, where to save the tfrecord files and other related files.
         examples: list, of Example objects
-        examples_tfrecords_files_max_size_in_bytes: int, maximum size in bytes of a tfrecord file.
+        examples_tfrecord_file_max_size_in_bytes: int, maximum size in bytes of a tfrecord file.
         examples_log_in_csv_file: bool, whether to log the metadata of the examples in a csv file.
         progress_bar: bool, display a progress bar.
 
@@ -32,7 +32,6 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
         -
 
     """
-
     if not os.path.exists(save_directory_path):
         os.mkdir(save_directory_path)
 
@@ -100,7 +99,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
             chunked_example_size = chunked_example.get_byte_size()
 
             # we will stack the data until they reach a memory limit
-            if current_tfrecord_file_content_size_in_bytes + chunked_example_size <= examples_tfrecords_files_max_size_in_bytes:
+            if current_tfrecord_file_content_size_in_bytes + chunked_example_size <= examples_tfrecord_file_max_size_in_bytes:
 
                 # we haven't reach the max yet, keep adding to the current file
                 #with tf.io.TFRecordWriter(current_tfrecord_filepath) as writer:
