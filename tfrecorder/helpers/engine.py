@@ -69,7 +69,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
         try:
             example.load(**kwargs)
         except IgnoreExampleException as e:
-            logger.warning(e)
+            if not progress_bar: logger.warning(e) # avoid progress bar and warnings
             continue # ignore this example
 
         # optionally, log the metadata of this example (before it is optionally chunked)
@@ -82,7 +82,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
         try:
             chunked_examples = example.split(**kwargs)
         except IgnoreExampleException as e:
-            logger.warning(e)
+            if not progress_bar: logger.warning(e) # avoid progress bar and warnings
             continue # ignore this example
 
         # if we have split the original example, no need to keep it around
