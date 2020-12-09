@@ -7,10 +7,33 @@ from collections import OrderedDict
 
 
 
+class MetaExample(type):
+    """
+    A metaclass used to custom the creation of the Example class.
+
+    This is to address the case where subclassing Example and then subclassing sub-class of Example is needed.
+    Previously, the proto_list attribute was declared at instance level. As a consequence, sub-subclass and subclass
+    instance shared the same proto_list object, which created problems when adding new tfrecordable attributes to the
+    sub-subclass.
+
+    Now, proto_list is created directly at the class level, and assigned an unambiguous attribute name so that the
+    correct list is used.
+    """
+
+    def __new__(mcs, class_name, bases, attrs):
+        proto_list = []
+        for base in bases:
+            # we add the proto_list of the parent classes, if any
+            proto_list += getattr(base, '%s_proto_list' % base.__name__)
+        setattr(mcs, '%s_proto_list' % class_name, proto_list)
+        cls = super(MetaExample, mcs).__new__(mcs, class_name, bases, attrs)
+        return cls
+
+    def __init__(cls, class_name, bases, attrs):
+        super(MetaExample, cls).__init__(class_name, bases, attrs)
 
 
-
-class Example:
+class Example(metaclass=MetaExample):
 
     class Field:
         """
@@ -40,7 +63,7 @@ class Example:
 
     def __init__(self):
 
-        self.proto_list = []
+        #self.proto_list = []
         self.proto = None
 
 
@@ -125,6 +148,9 @@ class Example:
         for k, t in self.get_tfrecordable_ordered_dict().items():
 
             # here k is the getter func name of each attribute marked as @tfrecordable
+            #if not hasattr(self, k):
+            #    continue # simply ignore fields that have been registered as tfrecordable by another class
+
             v = getattr(self, k)
 
             if v is None:
@@ -180,7 +206,8 @@ class Example:
 
     @classmethod
     def get_tfrecordable_ordered_dict(cls):
-        return OrderedDict(getattr(cls, 'proto_list'))
+        return OrderedDict(getattr(cls, '%s_proto_list' % cls.__name__))
+
 
     def get_byte_size(self):
         proto = self._to_tf_example_proto()

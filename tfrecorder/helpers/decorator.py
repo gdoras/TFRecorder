@@ -95,10 +95,17 @@ class Property(metaclass=MetaProperty, dtype=None):
             owner: Example subclass instance
             name: str, the name of this tfrecordable property.
         """
-        if hasattr(owner, PROTO_LIST):
-            getattr(owner, PROTO_LIST).append((name, self.__class__.dtype))
+        proto_list_attr_name = '%s_%s' % (owner.__name__, PROTO_LIST)
+        if hasattr(owner, proto_list_attr_name):
+            getattr(owner, proto_list_attr_name).append((name, self.__class__.dtype))
         else:
-            setattr(owner, PROTO_LIST, [(name, self.__class__.dtype)])
+            setattr(owner, proto_list_attr_name, [(name, self.__class__.dtype)])
+
+        #if hasattr(owner, PROTO_LIST):
+        #    getattr(owner, PROTO_LIST).append((owner, type(owner)))
+        #    getattr(owner, PROTO_LIST).append((name, self.__class__.dtype))
+        #else:
+        #    setattr(owner, PROTO_LIST, [(name, self.__class__.dtype)])
 
 
 
