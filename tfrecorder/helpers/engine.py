@@ -3,6 +3,7 @@ import os
 import time
 import csv
 from tqdm import tqdm
+import hashlib
 
 import tfrecorder.helpers.constants as cts
 import tfrecorder.helpers.utils as utils
@@ -113,7 +114,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
                 current_tfrecord_file_writer.close()
                 current_tfrecord_file_count += 1
 
-                current_tfrecord_filepath = os.path.join(save_directory_path, '%s.tfr' % current_tfrecord_file_count)
+                current_tfrecord_filepath = os.path.join(save_directory_path, '%s.tfr' % hash_time()) #current_tfrecord_file_count)
                 current_tfrecord_file_writer = tf.io.TFRecordWriter(current_tfrecord_filepath)
 
                 #with tf.io.TFRecordWriter(current_tfrecord_filepath) as writer:
@@ -151,3 +152,10 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
                  num_examples,
                  num_chunked_examples,
                  current_tfrecord_file_count))
+
+
+def hash_time():
+
+    hash = hashlib.sha1()
+    hash.update(str(time.time()).encode('utf-8'))
+    return hash.hexdigest()[:10]
