@@ -57,7 +57,7 @@ def generate_and_save_tfrecords_files_for_examples(save_directory_path,
     current_tfrecord_file_content_size_in_bytes = 0
 
     # as we dont want to keep data in memory, we write it to tfrecord right after it has been loaded.
-    current_tfrecord_filepath = os.path.join(save_directory_path, '%s.tfr' % current_tfrecord_file_count)
+    current_tfrecord_filepath = os.path.join(save_directory_path, '%s.tfr' % hash_time()) #current_tfrecord_filepath)
     current_tfrecord_file_writer = tf.io.TFRecordWriter(current_tfrecord_filepath)
 
     i, j = -1, 0
