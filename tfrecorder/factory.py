@@ -298,7 +298,7 @@ def generate_dataset(tfrecords_filepaths,
 
 # utils
 
-def get_tfrecord_filepaths(dirpath):
+def get_tfrecord_filepaths(dirpath, sort=False):
     """
     Convenience function to get a reference to the list of records files in this dir path.
     Args:
@@ -311,8 +311,10 @@ def get_tfrecord_filepaths(dirpath):
         raise ValueError('There is no directory at %s.' % dirpath)
 
     # make sure we sort the tfrecords in the same order than they were created. This can be shuffled afterward.
-    tfrecord_filepaths = sorted(glob.glob(os.path.join(dirpath, '*.tfr')),
-                                key= lambda fp: int(os.path.splitext(os.path.basename(fp))[0]))
+    tfrecord_filepaths = glob.glob(os.path.join(dirpath, '*.tfr'))
+    if sort:
+        tfrecord_filepaths = sorted(tfrecord_filepaths,
+                                    key= lambda fp: int(os.path.splitext(os.path.basename(fp))[0]))
 
 
     return tfrecord_filepaths
