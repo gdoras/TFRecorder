@@ -264,7 +264,9 @@ def generate_and_save_tfrecords_files_for_examples_files_dict(save_directory_pat
 def generate_dataset(tfrecords_filepaths,
                      example_class,
                      dataset_num_shuffled_tfrecord_files=None,
-                     dataset_fetching_num_threads=None
+                     dataset_fetching_num_threads=None,
+                     num_workers=None,
+                     worker_index=None
                      ):
     """
     Generate a dataset with a list of tfrecords filepaths. The dataset instantiate the protobuf for the given Example
@@ -277,6 +279,8 @@ def generate_dataset(tfrecords_filepaths,
         example_class: class, of Example subclass
         dataset_num_shuffled_tfrecord_files: int, size of the tfrecords filepaths buffer to shuffle before deserializing.
         dataset_fetching_num_threads: int
+        num_workers: int, when using distributed training, number of workers (e.g. hvd.size())
+        worker_index: int, when using distributed training, index of worker (e.g. hvd.rank())
 
 
     Returns:
@@ -284,6 +288,10 @@ def generate_dataset(tfrecords_filepaths,
     """
     # create one dataset object out of the list of tfrecords files
     dataset = tf.data.TFRecordDataset(tfrecords_filepaths)
+    if num_workers:
+        if worker_index is None:
+            raise ValueError('Please provide a worker index.')
+        dataset = dataset.shard(num_workers, worker_index)
 
     if dataset_num_shuffled_tfrecord_files:
         dataset = dataset.shuffle(buffer_size=dataset_num_shuffled_tfrecord_files)
